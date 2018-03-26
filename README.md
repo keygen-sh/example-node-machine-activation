@@ -23,6 +23,23 @@ Next, install dependencies with [`yarn`](https://yarnpkg.comg):
 yarn
 ```
 
+## Configuring a license policy
+
+Visit [your dashboard](https://app.keygen.sh/policies) and create a new
+policy with the following attributes:
+
+```javascript
+{
+  requireFingerprintScope: true,
+  maxMachines: 1,
+  concurrent: false,
+  floating: false,
+  strict: true
+}
+```
+
+## Activating a machine
+
 Then run the script and supply a license key and an arbitrary machine
 fingerprint to perform an activation:
 ```

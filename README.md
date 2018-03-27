@@ -38,6 +38,10 @@ policy with the following attributes:
 }
 ```
 
+You can leave all other attributes to their defaults, but feel free to
+modify them if needed for your particular licensing model, e.g. change
+the `maxMachines` limit, set it to `floating = true`, etc.
+
 ## Activating a machine
 
 Run the script and supply a valid license key and an arbitrary machine

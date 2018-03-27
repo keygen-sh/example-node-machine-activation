@@ -82,7 +82,7 @@ async function activateLicense(key, fingerprint) {
 
   const { data: machine, errors } = await activation.json()
   if (errors) {
-    throw new Error(errors.map(e => `${e.title}: ${e.detail}`).join(', '))
+    throw new Error(JSON.stringify(errors, null, 2))
   }
 
   // All is good - the machine was successfully activated.
@@ -104,11 +104,11 @@ async function main() {
     }
 
     console.log(
-      chalk.green('The current machine was successfully activated!')
+      chalk.green(`The current machine was successfully activated!\n${JSON.stringify(machine, null, 2)}`),
     )
   } catch(err) {
     console.error(
-      chalk.red(err.message)
+      chalk.red(`Activation error!\n${err.message}`)
     )
   }
 }

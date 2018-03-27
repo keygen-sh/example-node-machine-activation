@@ -40,7 +40,7 @@ policy with the following attributes:
 
 ## Activating a machine
 
-Then run the script and supply a license key and an arbitrary machine
+Run the script and supply a valid license key and an arbitrary machine
 fingerprint to perform an activation:
 ```
 yarn start test-key test:fingerprint

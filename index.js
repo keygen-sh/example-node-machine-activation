@@ -1,5 +1,5 @@
 const {
-  KEYGEN_PRODUCT_TOKEN,
+  KEYGEN_ACTIVATION_TOKEN,
   KEYGEN_ACCOUNT_ID
 } = process.env
 
@@ -61,7 +61,7 @@ async function activateLicense(key, fingerprint) {
   const activation = await fetch(`https://api.keygen.sh/v1/accounts/${KEYGEN_ACCOUNT_ID}/machines`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${KEYGEN_PRODUCT_TOKEN}`,
+      'Authorization': `Bearer ${KEYGEN_ACTIVATION_TOKEN}`,
       'Content-Type': 'application/vnd.api+json',
       'Accept': 'application/vnd.api+json'
     },

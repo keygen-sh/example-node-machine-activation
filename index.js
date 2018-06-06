@@ -1,12 +1,45 @@
 const {
+  MACHINE_STORAGE_PATH = 'machine.json',
   KEYGEN_ACTIVATION_TOKEN,
   KEYGEN_ACCOUNT_ID
 } = process.env
 
 const fetch = require('node-fetch')
+const readline = require('readline')
 const chalk = require('chalk')
+const fs = require('fs')
 
-async function activateLicense(key, fingerprint) {
+const rl = readline.createInterface(
+  process.stdin,
+  process.stdout
+)
+
+const prompt = msg =>
+  new Promise(resolve => rl.question(chalk.cyan(`${msg}: `), a => resolve(a)))
+
+async function setMachineCache(machine) {
+  try {
+    fs.writeFileSync(MACHINE_STORAGE_PATH, JSON.stringify(machine))
+
+    return machine
+  } catch (e) {}
+}
+
+async function getMachineCache() {
+  try {
+    const machine = fs.readFileSync(MACHINE_STORAGE_PATH)
+
+    return JSON.parse(machine)
+  } catch (e) {}
+}
+
+async function delMachineCache() {
+  try {
+    fs.unlinkSync(MACHINE_STORAGE_PATH)
+  } catch (e) {}
+}
+
+async function activateMachine(key, fingerprint) {
   // Validate the license key before activation, so we can be sure it supports
   // another machine. Notice that this validation is scoped to the current
   // machine via its fingerprint - this ensures that license activation is
@@ -30,7 +63,12 @@ async function activateLicense(key, fingerprint) {
   // If the license is valid, that means the current machine is already
   // activated. We can safely return.
   if (meta.valid) {
-    return null
+    const machine = await getMachineCache()
+
+    return {
+      activated: false,
+      machine
+    }
   }
 
   // If we've gotten this far, our license is not valid for the current
@@ -51,7 +89,7 @@ async function activateLicense(key, fingerprint) {
       break
     }
     default: {
-      throw new Error(`Activation failed: license ${meta.detail} (${meta.constant})`)
+      throw new Error(`license ${meta.detail} (${meta.constant})`)
     }
   }
 
@@ -85,31 +123,65 @@ async function activateLicense(key, fingerprint) {
     throw new Error(JSON.stringify(errors, null, 2))
   }
 
+  await setMachineCache(machine)
+
   // All is good - the machine was successfully activated.
-  return machine
+  return {
+    activated: true,
+    machine,
+  }
+}
+
+async function deactivateMachine(machine) {
+  const deactivation = await fetch(`https://api.keygen.sh/v1/accounts/${KEYGEN_ACCOUNT_ID}/machines/${machine.id}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${KEYGEN_ACTIVATION_TOKEN}`,
+      'Content-Type': 'application/vnd.api+json',
+      'Accept': 'application/vnd.api+json'
+    }
+  })
+
+  if (deactivation.status === 204) {
+    delMachineCache()
+
+    return
+  }
+
+  const { errors } = await deactivation.json()
+  if (errors) {
+    throw new Error(JSON.stringify(errors, null, 2))
+  }
 }
 
 async function main() {
-  const key = process.argv[2]
-  const fingerprint = process.argv[3]
+  const key = await prompt('Enter a license key')
+  const fingerprint = await prompt('Enter a machine fingerprint')
 
   try {
-    const machine = await activateLicense(key, fingerprint)
-    if (machine == null) {
+    const { machine, activated } = await activateMachine(key, fingerprint)
+    if (activated) {
       console.log(
-        chalk.yellow('The current machine has already been activated!')
+        chalk.green(`The current machine was successfully activated (${machine.id})`),
+      )
+    } else {
+      console.log(
+        chalk.yellow(`The current machine has already been activated (${machine.id})`)
       )
 
-      return
+      const deactivate = await prompt('Do you want to deactivate this machine? [y/N]')
+      if (`${deactivate}`.toLowerCase() === 'y') {
+        await deactivateMachine(machine)
+      }
     }
 
-    console.log(
-      chalk.green(`The current machine was successfully activated!\n${JSON.stringify(machine, null, 2)}`),
-    )
+    process.exit(0)
   } catch(err) {
     console.error(
-      chalk.red(`Activation error!\n${err.message}`)
+      chalk.red(`An error has occurred:\n${err.message}`)
     )
+
+    process.exit(1)
   }
 }
 

@@ -63,14 +63,17 @@ token to authenticate API requests. Note: admin and product tokens
 should never be used within client-side code, as they allow full
 management of your Keygen account.
 
-## Activating a machine
+## Activating/deactivating a machine
 
 Run the script and supply a valid license key and an arbitrary machine
-fingerprint to perform an activation:
+fingerprint when prompted to perform an activation:
 
 ```
-yarn start test-key test:fingerprint
+yarn start
 ```
+
+If the current machine has already been activated, you will be prompted
+to deactivate it.
 
 ## Questions?
 

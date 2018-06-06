@@ -123,6 +123,9 @@ async function activateMachine(key, fingerprint) {
     throw new Error(JSON.stringify(errors, null, 2))
   }
 
+  // We're caching the activation response locally so that we can perform
+  // a machine deactivation without hitting the network to query for the
+  // current machine's ID (which is different from its fingerprint).
   await setMachineCache(machine)
 
   // All is good - the machine was successfully activated.

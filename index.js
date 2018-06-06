@@ -80,10 +80,10 @@ async function activateMachine(key, fingerprint) {
     // more than 1 machine.
     case 'FINGERPRINT_SCOPE_MISMATCH':
     // You will receive a NO_MACHINES status when the license IS floating,
-    // and when it does not currently have any associated machines.
+    // and it does not currently have any associated machines.
     case 'NO_MACHINES':
     // You will receive a NO_MACHINE status when the license IS NOT floating
-    // i.e. it's node-locked, and when it does not currently have any
+    // i.e. it's node-locked, and it does not currently have any
     // associated machines.
     case 'NO_MACHINE': {
       break

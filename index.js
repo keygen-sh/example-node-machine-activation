@@ -175,6 +175,10 @@ async function main() {
       const deactivate = await prompt('Do you want to deactivate this machine? [y/N]')
       if (`${deactivate}`.toLowerCase() === 'y') {
         await deactivateMachine(machine)
+
+        console.log(
+          chalk.green(`The current machine was successfully deactivated (${machine.id})`),
+        )
       }
     }
 

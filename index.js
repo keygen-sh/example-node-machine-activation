@@ -165,7 +165,7 @@ async function main() {
     const { machine, activated } = await activateMachine(key, fingerprint)
     if (activated) {
       console.log(
-        chalk.green(`The current machine was successfully activated (${machine.id})`),
+        chalk.green(`The current machine was successfully activated (${machine.id})`)
       )
     } else {
       console.log(
@@ -177,7 +177,7 @@ async function main() {
         await deactivateMachine(machine)
 
         console.log(
-          chalk.green(`The current machine was successfully deactivated (${machine.id})`),
+          chalk.green(`The current machine was successfully deactivated (${machine.id})`)
         )
       }
     }

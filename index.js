@@ -167,7 +167,7 @@ async function main() {
       console.log(
         chalk.green(`The current machine was successfully activated (${machine.id})`)
       )
-    } else {
+    } else if (machine) {
       console.log(
         chalk.yellow(`The current machine has already been activated (${machine.id})`)
       )
@@ -180,6 +180,10 @@ async function main() {
           chalk.green(`The current machine was successfully deactivated (${machine.id})`)
         )
       }
+    } else {
+      console.log(
+        chalk.yellow(`The current machine has already been activated, but a cached copy of it's data could not be found. Maybe it was activated on another machine or through the dashboard UI?`)
+      )
     }
 
     process.exit(0)

@@ -73,7 +73,7 @@ async function activateMachine(key, fingerprint) {
 
   // If we've gotten this far, our license is not valid for the current
   // machine and we should attempt to activate it.
-  switch (meta.constant) {
+  switch (meta.code) {
     // This means the license already has at least 1 machine associated with
     // it, but none match the current machine's fingerprint. We're breaking
     // on this case because, for this example, we want to support activating
@@ -89,7 +89,7 @@ async function activateMachine(key, fingerprint) {
       break
     }
     default: {
-      throw new Error(`license ${meta.detail} (${meta.constant})`)
+      throw new Error(`license ${meta.detail} (${meta.code})`)
     }
   }
 

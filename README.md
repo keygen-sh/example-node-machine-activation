@@ -26,8 +26,7 @@ yarn
 ## Activating/deactivating a machine
 
 To perform a machine activation or a deactivation, run the script and
-supply a valid license key and an arbitrary machine fingerprint when
-prompted:
+supply a valid license key:
 
 ```bash
 yarn start
